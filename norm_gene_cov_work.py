@@ -56,10 +56,10 @@ for month in months:
     stdvs.append(stdv)
     means.append(mean)
    #print month, stdv
-print len(stdvs)
-print names
-print stdvs
-print means
+#print len(stdvs)
+#print names
+#print stdvs
+#print means
 
 
 ## Set up output
