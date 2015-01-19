@@ -1,7 +1,5 @@
 #!/usr/common/usg/languages/python/2.7.4/bin/python
 
-#for genepool...edited there....
-
 import sys, os
 
 def usage():
@@ -17,4 +15,4 @@ reffile.close()
 path2save=sys.argv[2]
 
 for line in reflist:
-	os.system("cp /global/projectb/projectdirs/microbial/img_web_data/taxon.fna/"+line.split("\t")[0]+".fna "+path2save)
+	os.system("cp /global/dna/projectdirs/microbial/img_web_data/taxon.fna/"+line.split("\n")[0]+".fna "+path2save)

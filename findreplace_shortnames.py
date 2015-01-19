@@ -20,10 +20,13 @@ input=inputfile.read()
 namekey=namekey.readlines()
 
 for line in namekey:
-	old=line.split(' ')[0].split('>')[1]
-	new=line.split('>')[-1].split('\n')[0]
+	old=line.split(' ')[0]
+	new=line.split(' ')[-1].split('\n')[0]
+	#old=line.split(' ')[0].split('>')[1]
+	#new=line.split('>')[-1].split('\n')[0]
+	print old, new
 	input=input.replace(old, new)
 
-output=open(sys.argv[1].split('.')[0]+'_short.tsv','w')
+output=open(sys.argv[1]+'2','w')
 output.write(input)
 output.close()

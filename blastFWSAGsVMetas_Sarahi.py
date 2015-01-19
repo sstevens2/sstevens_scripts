@@ -23,7 +23,7 @@ for SAGname in os.listdir(path2SAGs):
 	for metaname in os.listdir(path2metas):
 		outmeta=metaname.split(".")[0]
 		outSAG=SAGname.split("_")[0]
-		os.system("blastn -task blastn -db "+SAGdb+" -query "+path2metas+metaname+" -out "+path2SAGs+outmeta+"-vs-"+outSAG+ ".blast -evalue 0.001 -perc_identity 95")
+		os.system("blastn -task blastn -db "+SAGdb+" -query "+path2metas+metaname+" -out "+path2SAGs+outmeta+"-vs-"+outSAG+ ".blast -evalue 0.001 -perc_identity 95 -outfmt 6")
 		#print("blastn -task blastn -db "+SAGdb+" -query "+path2metas+metaname+" -out "+outmeta+"-vs-"+outSAG+ ".blast -evalue 0.001 -perc_identity 90 -outfmt 6 -num_threads 20")
 
 	

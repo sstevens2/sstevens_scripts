@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/common/usg/languages/python/2.7.4/bin/python
 
 import sys, os
 
@@ -18,7 +18,7 @@ for filename in os.listdir(path2files):
 		tax=taxfile.readlines()
 		taxlist.append([filename, tax])
 		taxfile.close()
-outputfile=open("combined_taxonomy.txt", "w")
+outputfile=open(path2files+"combined_taxonomy.txt", "w")
 outputfile.write("name\tsuperkingdom\tphylum\tclass\torder\tfamily\tgenus\tspecies\n")
 for line in taxlist:
 	outputfile.write(line[0]+"\t")

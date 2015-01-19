@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/common/usg/languages/python/2.7.4/bin/python
 
 import sys, os
 

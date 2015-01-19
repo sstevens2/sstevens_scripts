@@ -1,15 +1,10 @@
-#!/usr/bin/python
+#!/usr/common/usg/languages/python/2.7.4/bin/python
 
 import sys
 
 def usage():
 	print "Usage: parse_phylosift_sts.py inputfile  cutoffprob. cutoffpercentage outnameprefix concatonly(True/False?)"
-	print "cutoffprob. is the value for what probablilty within the STS it uses. cutoffpercentage is the value of what percent need to match to be classified"
-	print " both cutoffprob and cutoffpercentage need to be in decimals. e.g. 90% is .90."
-	print "I usually use the outputname prefix a the same as the input file.  Works well when running on many STS files(if you've renamed them for each bin)"
-	print "The outputfile comes with the cutoffprob and cutoffpercentage included."
-	print "concatonly needs True or False.  Where True will mean it uses only the bacterial and archael marker genes for the classification, not the eukaryotic markers"
-	print " Questions? Ask Sarah, sstevens2@wisc.edu"
+	print "The cutoffprob. and cutoffperc. need to be in decimal form, not percentages"
 
 if len(sys.argv) !=6:
 	usage()
@@ -49,10 +44,13 @@ def match_check(list2check, rank2check): #Function for checking specific level o
 	rankcount=[]
 	#checks all possible combos for matching ranks with that line
 	for line in ranklist:
-		count=0
+		count=(len(line[1].split("."))/2)
+		#count=0
 		for line2 in ranklist:
-			if line[4] == line2[4]:
-				count+=1
+			if line != line2:
+				if line[4] == line2[4]:
+					#count+=1
+					count=count+(len(line2[1].split("."))/2)
 		rankcount.append(count)
 	num_matches= max(rankcount)
 	total=len(rankcount)

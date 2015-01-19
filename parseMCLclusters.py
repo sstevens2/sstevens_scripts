@@ -3,15 +3,15 @@
 import sys, os, re
 
 def usage():
-	print "Usage: parseMCLclusters.py [cluster_file] [genome_name_list] [outputfilname.tsv]"
+	print "Usage: parseMCLclusters.py [cluster_file] [genome_name_list]"
 	print "This program takes the product of MCL and a list of genome names and puts them into an tab separated file with the clusters as rows and genomes as columns.  The genome name file must be each genome name on a separate line."
 
-if len(sys.argv) != 4:
+if len(sys.argv) != 3:
 	usage()
 	exit()
 
 # open all the input and output files
-outputfile = open(sys.argv[3], "w")
+outputfile = open(sys.argv[1]+".sorted", "w")
 namesfile = open(sys.argv[2], "rU")
 clusterfile = open(sys.argv[1], "rU")
 

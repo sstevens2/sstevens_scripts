@@ -1,7 +1,6 @@
-#!/usr/bin/python
+#!/usr/common/usg/languages/python/2.7.4/bin/python
 
-#only to rename files from binning
-#copied to server, and changed slightly and customized for TB binning
+#only to rename files from binning for comparison
 
 import sys, os
 
@@ -13,7 +12,7 @@ if len(sys.argv) !=2:
 	exit()
 
 file=open(sys.argv[1], "rU")
-output=open("ME.metabat."+sys.argv[1].split("specific")[-1], "w")
+output=open(sys.argv[1].split("_renamed")[0]+".fa", "w")
 output.write(file.read())
 output.close()
 file.close()
