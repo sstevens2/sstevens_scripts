@@ -5,6 +5,9 @@ import sys
 """parse_phylosift_sts.py: takes a sequence_taxa_summary.txt file from the program phyosift (run on only one bin/genome)
 	and uses a cutoff probability and percentage to determine the taxonomy of that bin/genome"""
 
+__author__ = "Sarah Stevens"
+__email__ = "sstevens2@wisc.edu"
+
 def usage():
 	print "Usage: parse_phylosift_sts.py inputfile  cutoffprob. cutoffpercentage outnameprefix BacteriaArchaeaMarkersOnly(True/False?)"
 	print "Example: parse_phylosift_sts.py sequence_taxa_summary.txt .90 .70 sts_mygenome.txt True"
