@@ -2,9 +2,14 @@
 
 import sys
 
+"""parse_phylosift_sts.py: takes a sequence_taxa_summary.txt file from the program phyosift (run on only one bin/genome)
+	and uses a cutoff probability and percentage to determine the taxonomy of that bin/genome"""
+
 def usage():
-	print "Usage: parse_phylosift_sts.py inputfile  cutoffprob. cutoffpercentage outnameprefix concatonly(True/False?)"
+	print "Usage: parse_phylosift_sts.py inputfile  cutoffprob. cutoffpercentage outnameprefix BacteriaArchaeaMarkersOnly(True/False?)"
+	print "Example: parse_phylosift_sts.py sequence_taxa_summary.txt .90 .70 sts_mygenome.txt True"
 	print "The cutoffprob. and cutoffperc. need to be in decimal form, not percentages"
+	print "Must use 'True' or 'False' exactly for using only the Bacterial/Archaeal Marker genes"
 
 if len(sys.argv) !=6:
 	usage()
@@ -17,7 +22,7 @@ co_prob=float(sys.argv[2])
 co_perc=float(sys.argv[3])
 outname=sys.argv[4]
 concatonly=bool(False)
-if sys.argv[5] == "True":
+if sys.argv[4] == "True":
 	concatonly=bool(True)
 outputfile=open(outname+".prob+"+str(co_prob)+".perc"+str(co_perc)+".txt", "w")
 
