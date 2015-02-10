@@ -5,6 +5,9 @@ import sys, os
 """combine_phylosift.py: takes a directory with many files from parse_phylosift_sts.py and 
 	makes a tab-delimited file with the taxonomy of each listed"""
 
+__author__ = "Sarah Stevens"
+__email__ = "sstevens2@wisc.edu"
+
 def usage():
 	print "Usage: combine_phylosiftout.py  directoryofparsedSTSs"
 
