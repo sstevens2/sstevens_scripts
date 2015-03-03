@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, os
+import sys, os, pandas
 
 """gene_sweep_analysis.py: looking for regions where SNPs sweep"""
 
@@ -13,3 +13,5 @@ def usage():
 if len(sys.argv) != 2:
 	usage()
 	sys.exit(2)
+
+
