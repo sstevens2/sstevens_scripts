@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
-import sys, os, pandas
+import sys, os
+import pandas as pd
 
 """gene_sweep_analysis.py: looking for regions where SNPs sweep"""
 
