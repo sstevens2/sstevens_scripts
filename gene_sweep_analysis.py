@@ -13,7 +13,7 @@ def usage():
 	print "Usage: gene_sweep_analysis.py file_TFfixed.tsv intsweepsize"
 	print "intsweepsize is an integer which specifies how many SNPs must sweep in a region"
 
-if len(sys.argv) != 2:
+if len(sys.argv) != 3:
 	usage()
 	sys.exit(2)
 
