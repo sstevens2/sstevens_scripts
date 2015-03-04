@@ -56,5 +56,9 @@ for name in years[1:]:
 			if (item+2) not in all_sweep:
 				all_sweep.append(item)
 
-print list(set(all_sweep))
-print sweep_filt
+##print list(set(all_sweep))
+##print sweep_filt
+
+counts=[]
+for item in sweep_filt:
+	print item, len(sweep_filt[item])
