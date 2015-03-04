@@ -17,23 +17,26 @@ if len(sys.argv) != 2:
 	sys.exit(2)
 
 input = pd.read_table(sys.argv[1],sep='\t')
+reg_value = int(3) # sets size of region to check for sweep, ex. 3 SNPs in a row
 ##print input['Y2005']
 
-def check_sweep(input_list):
+def check_sweep(input_list, reg):
 	outlist=[]
 	for i, row in enumerate(input_list):
 		if i < (len(input_list)-2):
-			if row == True:
-				if input_list[i+1]==True:
-					if input_list[i+2] == True:
-						outlist.append(i)
+			for j in range(0,reg):
+				index=i+j
+				if input_list[index]==False:
+					break
+			else:
+				outlist.append(i)
 	return outlist
 
 ##check_sweep(input['Y2005'])
 years = ['Y2005', 'Y2007', 'Y2008', 'Y2009', 'Y2012', 'Y2013']
 sweep_dict=dict() #regions that sweep in each year
 for name in years:
-	sweeps_fd=check_sweep(input[name])
+	sweeps_fd=check_sweep(input[name], reg_value)
 ##	print name, sweeps_fd
 	sweep_dict[name]=sweeps_fd
 ##print sweep_dict
@@ -51,5 +54,6 @@ for name in years[1:]:
 				all_sweep.append(item)
 			if (item+2) not in all_sweep:
 				all_sweep.append(item)
-print set(all_sweep)
+
+print list(set(all_sweep))
 print sweep_filt
