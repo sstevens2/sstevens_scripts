@@ -51,3 +51,5 @@ for name in years[1:]:
 				all_sweep.append(item)
 			if (item+2) not in all_sweep:
 				all_sweep.append(item)
+print set(all_sweep)
+print sweep_filt
