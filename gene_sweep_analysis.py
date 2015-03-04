@@ -10,20 +10,21 @@ __author__ = "Sarah Stevens"
 __email__ = "sstevens2@wisc.edu"
 
 def usage():
-	print "Usage: gene_sweep_analysis.py <file_TFfixed.tsv>"
+	print "Usage: gene_sweep_analysis.py file_TFfixed.tsv intsweepsize"
+	print "intsweepsize is an integer which specifies how many SNPs must sweep in a region"
 
 if len(sys.argv) != 2:
 	usage()
 	sys.exit(2)
 
 input = pd.read_table(sys.argv[1],sep='\t')
-reg_value = int(3) # sets size of region to check for sweep, ex. 3 SNPs in a row
+reg_value = int(sys.argv[2]) # sets size of region to check for sweep, ex. 3 SNPs in a row
 ##print input['Y2005']
 
 def check_sweep(input_list, reg):
 	outlist=[]
 	for i, row in enumerate(input_list):
-		if i < (len(input_list)-2):
+		if i < (len(input_list)-(reg-1)):
 			for j in range(0,reg):
 				index=i+j
 				if input_list[index]==False:
