@@ -11,7 +11,7 @@ __email__ = "sstevens2@wisc.edu"
 
 def usage():
 	print "Usage: gene_sweep_analysis.py file_TFfixed.tsv intsweepsize"
-	print "intsweepsize is an integer which specifies how many SNPs must sweep in a region"
+	print "intsweepsize is an integer which specifies how many SNPs must sweep in a region, must be > 1"
 
 if len(sys.argv) != 3:
 	usage()
@@ -23,13 +23,15 @@ reg_value = int(sys.argv[2]) # sets size of region to check for sweep, ex. 3 SNP
 years = ['Y2005', 'Y2007', 'Y2008', 'Y2009', 'Y2012', 'Y2013']
 
 #functions
-def check_sweep(input_list, reg): #checks each sliding window to see if there are the right number of trues in a row
+def check_sweep(input_list, chrom_list, reg): #checks each sliding window to see if there are the right number of trues in a row, provided they are on the same contig
 	outlist=[]
 	for i, row in enumerate(input_list):
 		if i < (len(input_list)-(reg-1)):
 			for j in range(0,reg):
 				index=i+j
-				if input_list[index]==False:
+				if chrom_list[i] != chrom_list[index]: #should break it if the first SNP and any SNP in the window are not in the same contig
+					break
+				elif input_list[index]==False:
 					break
 			else:
 				outlist.append(i)
@@ -53,16 +55,10 @@ def check_byfirstyear(sweep_indict, years_list): # compares each years sweeping 
 			sweep_filt[name]=sweeps_set
 	return sweep_filt
 
-#executing body
-chrom_dict=dict()
-for chrom in input['CHROM'].unique():
-	chrom_dict[chrom] = input[input['CHROM'] == chrom]
-
-
 sweep_dict=dict() #regions that sweep in each year
 for name in years:
-	sweeps_fd=check_sweep(input[name], reg_value)
-	sweep_dict[name]=sweeps_fd
+		sweeps_fd=check_sweep(input[name], input['CHROM'], reg_value)
+		sweep_dict[name]=sweeps_fd
 
 sweep_filt=check_byfirstyear(sweep_dict, years)
 swept_regions=make_indexlist(sweep_filt, reg_value)
