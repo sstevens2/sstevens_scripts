@@ -36,7 +36,6 @@ def check_sweep(input_list, reg): #checks each sliding window to see if there ar
 def make_indexlist(sweepfilt_dict, reg): #makes list of all the rows which are actually in the gene region that sweeps
 	all_sweep=list() #all the lines which sweep
 	for item in sweepfilt_dict:
-##		print item, sweepfilt_dict[item]
 		for i in sweepfilt_dict[item]:
 			for j in range(0,reg):
 				index=j+i
@@ -44,20 +43,21 @@ def make_indexlist(sweepfilt_dict, reg): #makes list of all the rows which are a
 					all_sweep.append(index)
 	return sorted(all_sweep)
 
-##check_sweep(input['Y2005'])
+def check_byfirstyear(sweep_indict, years_list): # compares each years sweeping regions and removes those which were considered swept in the first year
+	sweep_filt=dict() #regions that sweep in each year, excluding those which were already true in 1st year
+	for name in years_list[1:]:
+		sweeps_set=list(set(sweep_indict[name]) & (set(sweep_indict[name]) ^ set(sweep_indict[years_list[0]])))
+		if sweeps_set:
+			sweep_filt[name]=sweeps_set
+	return sweep_filt
+
 years = ['Y2005', 'Y2007', 'Y2008', 'Y2009', 'Y2012', 'Y2013']
 sweep_dict=dict() #regions that sweep in each year
 for name in years:
 	sweeps_fd=check_sweep(input[name], reg_value)
-##	print name, sweeps_fd
 	sweep_dict[name]=sweeps_fd
-##print sweep_dict
 
-sweep_filt=dict() #regions that sweep in each year, excluding those which were already true in 1st year
-for name in years[1:]:
-	sweeps_set=list(set(sweep_dict[name]) & (set(sweep_dict[name]) ^ set(sweep_dict[years[0]])))
-	if sweeps_set:
-		sweep_filt[name]=sweeps_set
+sweep_filt=check_byfirstyear(sweep_dict, years)
 
 swept_regions=make_indexlist(sweep_filt, reg_value)
 print swept_regions
