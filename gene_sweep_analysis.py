@@ -17,10 +17,12 @@ if len(sys.argv) != 3:
 	usage()
 	sys.exit(2)
 
+#input values
 input = pd.read_table(sys.argv[1],sep='\t')
 reg_value = int(sys.argv[2]) # sets size of region to check for sweep, ex. 3 SNPs in a row
-##print input['Y2005']
+years = ['Y2005', 'Y2007', 'Y2008', 'Y2009', 'Y2012', 'Y2013']
 
+#functions
 def check_sweep(input_list, reg): #checks each sliding window to see if there are the right number of trues in a row
 	outlist=[]
 	for i, row in enumerate(input_list):
@@ -51,15 +53,17 @@ def check_byfirstyear(sweep_indict, years_list): # compares each years sweeping 
 			sweep_filt[name]=sweeps_set
 	return sweep_filt
 
-years = ['Y2005', 'Y2007', 'Y2008', 'Y2009', 'Y2012', 'Y2013']
+
+#executing body
+
 sweep_dict=dict() #regions that sweep in each year
 for name in years:
 	sweeps_fd=check_sweep(input[name], reg_value)
 	sweep_dict[name]=sweeps_fd
 
 sweep_filt=check_byfirstyear(sweep_dict, years)
-
 swept_regions=make_indexlist(sweep_filt, reg_value)
+
 print swept_regions
 
 ##print list(set(all_sweep))
