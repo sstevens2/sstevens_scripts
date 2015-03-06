@@ -2,7 +2,6 @@
 
 import sys, os
 import pandas as pd
-import numpy as np
 
 """gene_sweep_analysis.py: looking for regions where SNPs sweep"""
 
@@ -29,7 +28,7 @@ def check_sweep(input_list, chrom_list, reg): #checks each sliding window to see
 		if i < (len(input_list)-(reg-1)):
 			for j in range(0,reg):
 				index=i+j
-				if chrom_list[i] != chrom_list[index]: #should break it if the first SNP and any SNP in the window are not in the same contig
+				if chrom_list[i] != chrom_list[index]: #breaks it if the first SNP and any SNP in the window are not in the same contig
 					break
 				elif input_list[index]==False:
 					break
@@ -57,16 +56,19 @@ def check_byfirstyear(sweep_indict, years_list): # compares each years sweeping 
 
 sweep_dict=dict() #regions that sweep in each year
 for name in years:
-		sweeps_fd=check_sweep(input[name], input['CHROM'], reg_value)
+		sweeps_fd=check_sweep(input[name], input['CHROM'], reg_value) # returning the list of regions that sweep
 		sweep_dict[name]=sweeps_fd
 
-sweep_filt=check_byfirstyear(sweep_dict, years)
-swept_regions=make_indexlist(sweep_filt, reg_value)
+sweep_filt=check_byfirstyear(sweep_dict, years) #checking that the sweep was not true in the first year
+#swept_regions=make_indexlist(sweep_filt, reg_value)
 
 ##print sweep_filt
 ##print swept_regions
 
 #make counts of each year
-counts=[]
+counts=dict()
 for item in sweep_filt:
-	print item, len(sweep_filt[item])
+	counts[item] = len(sweep_filt[item])
+print counts
+
+
