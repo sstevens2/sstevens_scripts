@@ -53,8 +53,11 @@ def check_byfirstyear(sweep_indict, years_list): # compares each years sweeping 
 			sweep_filt[name]=sweeps_set
 	return sweep_filt
 
-
 #executing body
+chrom_dict=dict()
+for chrom in input['CHROM'].unique():
+	chrom_dict[chrom] = input[input['CHROM'] == chrom]
+
 
 sweep_dict=dict() #regions that sweep in each year
 for name in years:
@@ -64,11 +67,10 @@ for name in years:
 sweep_filt=check_byfirstyear(sweep_dict, years)
 swept_regions=make_indexlist(sweep_filt, reg_value)
 
-print swept_regions
-
-##print list(set(all_sweep))
 ##print sweep_filt
+##print swept_regions
 
+#make counts of each year
 counts=[]
 for item in sweep_filt:
 	print item, len(sweep_filt[item])
