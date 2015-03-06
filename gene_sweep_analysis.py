@@ -54,7 +54,6 @@ for name in years:
 ##print sweep_dict
 
 sweep_filt=dict() #regions that sweep in each year, excluding those which were already true in 1st year
-all_sweep=list() #all the lines which sweep
 for name in years[1:]:
 	sweeps_set=list(set(sweep_dict[name]) & (set(sweep_dict[name]) ^ set(sweep_dict[years[0]])))
 	if sweeps_set:
