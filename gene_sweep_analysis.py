@@ -9,8 +9,8 @@ __author__ = "Sarah Stevens"
 __email__ = "sstevens2@wisc.edu"
 
 def usage():
-	print "Usage: gene_sweep_analysis.py file_TFfixed.tsv intsweepsize"
-	print "intsweepsize is an integer which specifies how many SNPs must sweep in a region, must be > 1"
+	print "Usage: gene_sweep_analysis.py file_TFfixed.tsv windowsize"
+	print "windowsize specifies how many SNPs in a row must sweep in a region, must be an integer and > 1"
 
 if len(sys.argv) != 3:
 	usage()
@@ -69,6 +69,27 @@ sweep_filt=check_byfirstyear(sweep_dict, years) #checking that the sweep was not
 counts=dict()
 for item in sweep_filt:
 	counts[item] = len(sweep_filt[item])
-print counts
+#print counts
 
+#writing counts to output
+header='window_size\t'
+outline=str(reg_value)+'\t'
+for name in years: # loop to put together header and output line of counts
+	header=header+name+'\t'
+	if name in counts: #checks if year has any count
+		outline=outline+str(counts[name])+'\t'
+	elif name == years[0]: # writes na if this is the first year
+		outline=outline+'na'+'\t'
+	else: #writes 0 if there is were no windows found
+		outline=outline+'0'+'\t'
+
+header=header[:-1]+'\n'
+outline=outline[:-1]+'\n'
+outname=os.path.splitext(sys.argv[1])[0]+"_counts.tsv"
+if os.path.isfile(outname):
+	with open(outname, "a") as output:
+		output.write(outline)
+else:
+	with open(outname, "w") as output:
+		output.write(header+outline)
 
