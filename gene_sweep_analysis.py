@@ -93,3 +93,4 @@ else:
 	with open(outname, "w") as output:
 		output.write(header+outline)
 
+#look at output of testing think that it is counting for the 3's wrong in years where there are all trues...check!
