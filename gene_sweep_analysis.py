@@ -49,10 +49,13 @@ def make_indexlist(sweepfilt_dict, reg): #makes list of all the rows which are a
 
 def check_byfirstyear(sweep_indict, years_list): # compares each years sweeping regions and removes those which were considered swept in the first year
 	sweep_filt=dict() #regions that sweep in each year, excluding those which were already true in 1st year
-	for name in years_list[1:]:
-		sweeps_set=list(set(sweep_indict[name]) & (set(sweep_indict[name]) ^ set(sweep_indict[years_list[0]])))
-		if sweeps_set:
-			sweep_filt[name]=sweeps_set
+	for i, name in enumerate(years_list):
+		if i == 0:
+			pass
+		else:
+			sweeps_set=list(set(sweep_indict[name]) & (set(sweep_indict[name]) ^ set(sweep_indict[years_list[i-1]])))
+			if sweeps_set:
+				sweep_filt[name]=sweeps_set
 	return sweep_filt
 
 sweep_dict=dict() #regions that sweep in each year
