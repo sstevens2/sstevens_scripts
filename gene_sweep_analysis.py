@@ -72,8 +72,9 @@ for item in sweep_filt:
 #print counts
 
 #writing counts to output
+filename=sys.argv[1].split('_')[0]
 header='window_size\t'
-outline=str(reg_value)+'\t'
+outline=filename+'_'+str(reg_value)+'\t'
 for name in years: # loop to put together header and output line of counts
 	header=header+name+'\t'
 	if name in counts: #checks if year has any count
@@ -93,4 +94,3 @@ else:
 	with open(outname, "w") as output:
 		output.write(header+outline)
 
-#look at output of testing think that it is counting for the 3's wrong in years where there are all trues...check!
