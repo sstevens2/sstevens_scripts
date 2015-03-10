@@ -12,6 +12,8 @@ def usage():
 	print "Usage: parse_phylosift_sts.py inputfile  cutoffprob. cutoffpercentage outnameprefix BacteriaArchaeaMarkersOnly(True/False?)"
 	print "Example: parse_phylosift_sts.py sequence_taxa_summary.txt .90 .70 sts_mygenome.txt True"
 	print "The cutoffprob. and cutoffperc. need to be in decimal form, not percentages"
+	print "The cutoffprob. removes any marker genes with probabilies below that value, for each level of taxonomy."
+	print "The cutoffperc. only allows for classification if the marker genes match at that level of taxonomy above this value."
 	print "Must use 'True' or 'False' exactly for using only the Bacterial/Archaeal Marker genes"
 
 if len(sys.argv) !=6:
