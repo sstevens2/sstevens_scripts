@@ -91,7 +91,7 @@ for name in years: # loop to put together header and output line of counts
 		outline=outline+str(counts[name])+'\t'
 	elif name == years[0]: # writes na if this is the first year
 		outline=outline+'na'+'\t'
-	elif (cov.iloc[0] == False) and (name != years[0]):
+	elif (cov.iloc[0] == False) and (name != years[0]): #if coverage is low and it isn't the first year
 		outline=outline+'low_cov'+'\t'
 	else: #writes 0 if there is were no windows found
 		outline=outline+'0'+'\t'
@@ -105,4 +105,15 @@ if os.path.isfile(outname):
 else:
 	with open(outname, "w") as output:
 		output.write(header+outline)
+
+""""swept_SNPs = make_indexlist(sweep_filt, reg_value)
+outdf=pd.DataFrame(columns=input.columns.values)
+print input.loc[0]
+for index in swept_SNPs:
+	outdf=outdf.append(input.loc[index])
+
+print outdf
+"""
+
+
 
