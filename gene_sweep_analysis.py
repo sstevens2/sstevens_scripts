@@ -40,7 +40,6 @@ def check_sweep(input_list, chrom_list, reg): #checks each sliding window to see
 def make_indexlist(sweepfilt_dict, reg, cov_bools): #makes list of all the rows which are actually in the gene region that sweeps, doesn't add the SNPs in years with too low coverage
 	all_sweep=list() #all the lines which sweep
 	for item in sweepfilt_dict:
-		print item
 		cyear = 'X'+item[1:] #year for coverage
 		if cov_bools[cyear].iloc[0]==False:
 			continue
@@ -108,7 +107,7 @@ for item in sweep_filt:
 filename=sys.argv[1].split('_')[0]
 covs = covfile[covfile['id'] == filename]
 covs = covs > 10
-print covs
+
 """
 #writing counts to output those which pass the coverage requirement above
 header='window_size\t'
@@ -143,7 +142,8 @@ outdf=pd.DataFrame(columns=input.columns.values)
 for index in swept_SNPs:
 	outdf=outdf.append(input.loc[index])
 
-print outdf
+outtablename=os.path.splitext(sys.argv[1])[0]+"_SNPs.tsv"
+outdf.to_csv(outtablename,sep='\t')
 
 
 
