@@ -47,7 +47,18 @@ def make_indexlist(sweepfilt_dict, reg): #makes list of all the rows which are a
 					all_sweep.append(index)
 	return sorted(all_sweep)
 
-def check_byfirstyear(sweep_indict, years_list): # compares each years sweeping regions and removes those which were considered swept in the first year
+def check_bylastyear(sweep_indict, years_list): # compares each year's sweeping regions and removes those which were considered swept in the year before
+	sweep_filt=dict() #regions that sweep in each year, excluding those which were already true in in previous year
+	for i, name in enumerate(years_list):
+		if i == 0:
+			pass
+		else:
+			sweeps_set=list(set(sweep_indict[name]) & (set(sweep_indict[name]) ^ set(sweep_indict[years_list[i-1]])))
+			if sweeps_set:
+				sweep_filt[name]=sweeps_set
+	return sweep_filt
+
+def check_byfixed(sweep_indict, years_list): #  compares each year's sweeping regions, looking for those which are not in any year prior, but in all of the following years
 	sweep_filt=dict() #regions that sweep in each year, excluding those which were already true in 1st year
 	for i, name in enumerate(years_list):
 		if i == 0:
@@ -63,12 +74,12 @@ for name in years:
 		sweeps_fd=check_sweep(input[name], input['CHROM'], reg_value) # returning the list of regions that sweep
 		sweep_dict[name]=sweeps_fd
 
-sweep_filt=check_byfirstyear(sweep_dict, years) #checking that the sweep was not true in the first year
+sweep_filt=check_byfixed(sweep_dict, years) #checking that the sweep was not true in the first year
 #swept_regions=make_indexlist(sweep_filt, reg_value)
 
-##print sweep_filt
+print sweep_filt
 ##print swept_regions
-
+"""
 #make counts of each year
 counts=dict()
 for item in sweep_filt:
@@ -96,6 +107,7 @@ for name in years: # loop to put together header and output line of counts
 	else: #writes 0 if there is were no windows found
 		outline=outline+'0'+'\t'
 
+#write counts to output
 header=header[:-1]+'\n'
 outline=outline[:-1]+'\n'
 outname=os.path.splitext(sys.argv[1])[0]+"_counts.tsv"
@@ -105,6 +117,7 @@ if os.path.isfile(outname):
 else:
 	with open(outname, "w") as output:
 		output.write(header+outline)
+"""
 
 """"swept_SNPs = make_indexlist(sweep_filt, reg_value)
 outdf=pd.DataFrame(columns=input.columns.values)
