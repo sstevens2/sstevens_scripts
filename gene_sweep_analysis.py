@@ -47,8 +47,19 @@ def make_indexlist(sweepfilt_dict, reg): #makes list of all the rows which are a
 					all_sweep.append(index)
 	return sorted(all_sweep)
 
+def check_byfirstyear(sweep_indict, years_list): # compares each year's sweeping regions and removes those which were considered swept in the first year
+	sweep_filt=dict() #regions that sweep in each year, excluding those which were already true in the first year
+	for i, name in enumerate(years_list):
+		if i == 0:
+			pass
+		else:
+			sweeps_set=list(set(sweep_indict[name]) & (set(sweep_indict[name]) ^ set(sweep_indict[years_list[0]])))
+			if sweeps_set:
+				sweep_filt[name]=sweeps_set
+	return sweep_filt
+
 def check_bylastyear(sweep_indict, years_list): # compares each year's sweeping regions and removes those which were considered swept in the year before
-	sweep_filt=dict() #regions that sweep in each year, excluding those which were already true in in previous year
+	sweep_filt=dict() #regions that sweep in each year, excluding those which were already true in the previous year
 	for i, name in enumerate(years_list):
 		if i == 0:
 			pass
@@ -79,7 +90,7 @@ sweep_filt=check_byfixed(sweep_dict, years) #checking that the sweep was not tru
 
 print sweep_filt
 ##print swept_regions
-"""
+
 #make counts of each year
 counts=dict()
 for item in sweep_filt:
@@ -90,7 +101,7 @@ for item in sweep_filt:
 filename=sys.argv[1].split('_')[0]
 covs = covfile[covfile['id'] == filename]
 covs = covs > 10
-
+"""
 #writing counts to output those which pass the coverage requirement above
 header='window_size\t'
 outline=filename+'_'+str(reg_value)+'\t'
@@ -117,9 +128,8 @@ if os.path.isfile(outname):
 else:
 	with open(outname, "w") as output:
 		output.write(header+outline)
-"""
 
-""""swept_SNPs = make_indexlist(sweep_filt, reg_value)
+swept_SNPs = make_indexlist(sweep_filt, reg_value)
 outdf=pd.DataFrame(columns=input.columns.values)
 print input.loc[0]
 for index in swept_SNPs:
