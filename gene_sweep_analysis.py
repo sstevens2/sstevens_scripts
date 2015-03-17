@@ -53,29 +53,33 @@ def check_byfirstyear(sweep_indict, years_list): # compares each year's sweeping
 		if i == 0:
 			pass
 		else:
-			sweeps_set=list(set(sweep_indict[name]) & (set(sweep_indict[name]) ^ set(sweep_indict[years_list[0]])))
+			sweeps_set=list(set(sweep_indict[name]) - set(sweep_indict[years_list[0]]))
 			if sweeps_set:
 				sweep_filt[name]=sweeps_set
 	return sweep_filt
 
-def check_bylastyear(sweep_indict, years_list): # compares each year's sweeping regions and removes those which were considered swept in the year before
+def check_bypreviousyear(sweep_indict, years_list): # compares each year's sweeping regions and removes those which were considered swept in the year before
 	sweep_filt=dict() #regions that sweep in each year, excluding those which were already true in the previous year
 	for i, name in enumerate(years_list):
 		if i == 0:
 			pass
 		else:
-			sweeps_set=list(set(sweep_indict[name]) & (set(sweep_indict[name]) ^ set(sweep_indict[years_list[i-1]])))
+			sweeps_set=list(set(sweep_indict[name]) - set(sweep_indict[years_list[i-1]]))
 			if sweeps_set:
 				sweep_filt[name]=sweeps_set
 	return sweep_filt
 
-def check_byfixed(sweep_indict, years_list): #  compares each year's sweeping regions, looking for those which are not in any year prior, but in all of the following years
+def check_byfixedyear(sweep_indict, years_list): #  compares each year's sweeping regions, looking for those which are not in any year prior, but in all of the following years
 	sweep_filt=dict() #regions that sweep in each year, excluding those which were already true in 1st year
 	for i, name in enumerate(years_list):
 		if i == 0:
 			pass
 		else:
-			sweeps_set=list(set(sweep_indict[name]) & (set(sweep_indict[name]) ^ set(sweep_indict[years_list[i-1]])))
+			sweeps_set=list(sweep_indict[name])
+			for j in range(0,i): # removes any windows found in previous years
+				sweeps_set=list(set(sweeps_set) - set(sweep_indict[years_list[j]]))
+			for j in range(i+1,len(years_list)): # removes any windows not found in subsequent years
+				sweeps_set=list(set(sweeps_set) & set(sweep_indict[years_list[j]]))
 			if sweeps_set:
 				sweep_filt[name]=sweeps_set
 	return sweep_filt
@@ -85,10 +89,10 @@ for name in years:
 		sweeps_fd=check_sweep(input[name], input['CHROM'], reg_value) # returning the list of regions that sweep
 		sweep_dict[name]=sweeps_fd
 
-sweep_filt=check_byfixed(sweep_dict, years) #checking that the sweep was not true in the first year
+sweep_filt=check_byfixedyear(sweep_dict, years) #checking that the sweep was not true in the first year
 #swept_regions=make_indexlist(sweep_filt, reg_value)
 
-print sweep_filt
+##print sweep_filt
 ##print swept_regions
 
 #make counts of each year
@@ -101,7 +105,7 @@ for item in sweep_filt:
 filename=sys.argv[1].split('_')[0]
 covs = covfile[covfile['id'] == filename]
 covs = covs > 10
-"""
+
 #writing counts to output those which pass the coverage requirement above
 header='window_size\t'
 outline=filename+'_'+str(reg_value)+'\t'
@@ -128,7 +132,7 @@ if os.path.isfile(outname):
 else:
 	with open(outname, "w") as output:
 		output.write(header+outline)
-
+"""
 swept_SNPs = make_indexlist(sweep_filt, reg_value)
 outdf=pd.DataFrame(columns=input.columns.values)
 print input.loc[0]
