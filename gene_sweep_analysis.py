@@ -78,7 +78,7 @@ def check_byfixedyear(sweep_indict, years_list): #  compares each year's sweepin
 		if i == 0:
 			pass
 		else:
-			sweeps_set=list(sweep_indict[name])
+			sweeps_set=list(sweep_indict[name])### don't actually need to convert to a list! ever for these anyway...go check these
 			for j in range(0,i): # removes any windows found in previous years
 				sweeps_set=list(set(sweeps_set) - set(sweep_indict[years_list[j]]))
 			for j in range(i+1,len(years_list)): # removes any windows not found in subsequent years
@@ -107,8 +107,7 @@ for item in sweep_filt:
 filename=sys.argv[1].split('_')[0]
 covs = covfile[covfile['id'] == filename]
 covs = covs > 10
-
-"""
+#"""
 #writing counts to output those which pass the coverage requirement above
 header='window_size\t'
 outline=filename+'_'+str(reg_value)+'\t'
@@ -130,12 +129,12 @@ header=header[:-1]+'\n'
 outline=outline[:-1]+'\n'
 outname=os.path.splitext(sys.argv[1])[0]+"_counts.tsv"
 if os.path.isfile(outname):
-	with open(outname, "a") as output:
+	with open(outname, "a") as output:  #check to see if append will open a new file if doesnt exist
 		output.write(outline)
 else:
 	with open(outname, "w") as output:
 		output.write(header+outline)
-"""
+#"""
 swept_SNPs = make_indexlist(sweep_filt, reg_value, covs)
 ###print len(swept_SNPs)
 outdf=pd.DataFrame(columns=input.columns.values)
