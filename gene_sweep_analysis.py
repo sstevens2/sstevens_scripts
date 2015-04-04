@@ -9,7 +9,7 @@ __author__ = "Sarah Stevens"
 __email__ = "sstevens2@wisc.edu"
 
 def usage():
-	print "Usage: gene_sweep_analysis.py file_TFfixed.tsv windowsize covfile"
+	print "Usage: gene_sweep_analysis.py file_loc.csv windowsize covfile"
 	print "windowsize specifies how many SNPs in a row must sweep in a region, must be an integer and > 1"
 
 if len(sys.argv) != 4:
@@ -17,7 +17,7 @@ if len(sys.argv) != 4:
 	sys.exit(2)
 
 #input values
-input = pd.read_table(sys.argv[1],sep='\t')
+input = pd.read_table(sys.argv[1],sep=',')
 reg_value = int(sys.argv[2]) # sets size of region to check for sweep, ex. 3 SNPs in a row
 years = ['Y2005', 'Y2007', 'Y2008', 'Y2009', 'Y2012', 'Y2013']
 covfile= pd.read_table(sys.argv[3],sep='\t')
@@ -87,12 +87,12 @@ def check_byfixedyear(sweep_indict, years_list): #  compares each year's sweepin
 				sweep_filt[name]=sweeps_set
 	return sweep_filt
 
-sweep_dict=dict() #regions that sweep in each year
+sweep_dict=dict() #regions that are T in each year
 for name in years:
-		sweeps_fd=check_sweep(input[name], input['CHROM'], reg_value) # returning the list of regions that sweep
+		sweeps_fd=check_sweep(((input[name] > 0.95) | (input[name] < 0.05)), input['CHROM'], reg_value) # returning the list of regions that sweep
 		sweep_dict[name]=sweeps_fd
 
-sweep_filt=check_byfixedyear(sweep_dict, years) #checking that the sweep was not true in the first year
+sweep_filt=check_byfixedyear(sweep_dict, years) #checking that the sweeping regions are actually fixed (F before, T after)
 
 ##print sweep_filt
 ##print swept_regions
@@ -107,7 +107,7 @@ for item in sweep_filt:
 filename=sys.argv[1].split('_')[0]
 covs = covfile[covfile['id'] == filename]
 covs = covs > 10
-#"""
+
 #writing counts to output those which pass the coverage requirement above
 header='window_size\t'
 outline=filename+'_'+str(reg_value)+'\t'
@@ -134,7 +134,7 @@ if os.path.isfile(outname):
 else:
 	with open(outname, "w") as output:
 		output.write(header+outline)
-#"""
+
 swept_SNPs = make_indexlist(sweep_filt, reg_value, covs)
 ###print len(swept_SNPs)
 outdf=pd.DataFrame(columns=input.columns.values)
