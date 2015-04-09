@@ -19,7 +19,8 @@ if len(sys.argv) != 4:
 #input values
 input = pd.read_table(sys.argv[1],sep=',')
 reg_value = int(sys.argv[2]) # sets size of region to check for sweep, ex. 3 SNPs in a row
-years = ['Y2005', 'Y2007', 'Y2008', 'Y2009', 'Y2012', 'Y2013']
+#years = ['Y2005', 'Y2007', 'Y2008', 'Y2009', 'Y2012', 'Y2013'] #tb_hyp years
+years = ['Y2007', 'Y2008', 'Y2009'] #tb_epi years
 covfile= pd.read_table(sys.argv[3],sep='\t')
 
 #functions
@@ -107,7 +108,6 @@ for item in sweep_filt:
 filename=sys.argv[1].split('_')[0]
 covs = covfile[covfile['id'] == filename]
 covs = covs > 10
-
 #writing counts to output those which pass the coverage requirement above
 header='window_size\t'
 outline=filename+'_'+str(reg_value)+'\t'
@@ -134,7 +134,7 @@ if os.path.isfile(outname):
 else:
 	with open(outname, "w") as output:
 		output.write(header+outline)
-
+"""
 swept_SNPs = make_indexlist(sweep_filt, reg_value, covs)
 ###print len(swept_SNPs)
 outdf=pd.DataFrame(columns=input.columns.values)
@@ -143,7 +143,7 @@ for index in swept_SNPs:
 
 outtablename=os.path.splitext(sys.argv[1])[0]+"_SNPs.tsv"
 outdf.to_csv(outtablename,sep='\t')
-
+"""
 
 
 
