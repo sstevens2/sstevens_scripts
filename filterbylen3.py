@@ -14,7 +14,8 @@ if len(sys.argv) != 3:
 filename=sys.argv[1]
 minlen=int(sys.argv[2])
 
-output_name=filename.split(".")[0]+".lenfilt"+str(minlen)
+output_name=os.path.splitext(filename)[0]+".lenfilt+str(minlen)
+#output_name=filename.split(".")[0]+".lenfilt"+str(minlen)
 print "Working on "+ output_name
 fastafile=open(filename, "rU")
 fasta=fastafile.read()
