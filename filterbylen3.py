@@ -5,7 +5,6 @@ import sys, os
 def usage():
 	print "Usage: filterbylen2.py fastafile minlen"
 	print "Doesn't use Bio package, only keeps seqs >=minlen"
-	print "File needs to end in .fasta"
 
 if len(sys.argv) != 3:
 	usage()
@@ -28,7 +27,7 @@ for read in reads:
 	if len(seq) >= minlen:
 		#print split[0], len(seq)
 		readslist.append([split[0],seq])
-outputfile=open(output_name+".fasta", "w")
+outputfile=open(output_name+".fa", "w")
 for read in readslist:
 	outputfile.write(">"+read[0]+"\n"+read[1]+"\n")
 outputfile.close()
