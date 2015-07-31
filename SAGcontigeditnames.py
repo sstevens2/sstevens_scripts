@@ -12,8 +12,8 @@ if len(sys.argv) !=2:
 fasta=open(sys.argv[1], "rU")
 listfa =fasta.readlines()
 fasta.close()
-output=open(sys.argv[1].split(".fasta")[0]+"_short.fna", "w")
-output2=open(sys.argv[1]+"_namekey.txt", "w")
+output=open(os.path.splitext(sys.argv[1])[0]+"_short.fna", "w")
+output2=open(os.path.splitext(sys.argv[1])[0]+"_namekey.txt", "w")
 
 index=0
 for line in listfa:
