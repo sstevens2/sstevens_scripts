@@ -2,13 +2,17 @@
 
 import sys, os, string, random
 
+"""
+This program takes a fna file and renames each entry with the name of the file and a 3 digit number
+"""
+
 def usage():
 	print "Usage: SAGcontigeditnames.py fastafile"
 
 if len(sys.argv) !=2:
 	usage()
 	exit()
-	
+
 fasta=open(sys.argv[1], "rU")
 listfa =fasta.readlines()
 fasta.close()
