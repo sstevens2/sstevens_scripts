@@ -9,7 +9,7 @@ def usage():
 if len(sys.argv) != 4:
 	usage()
 	exit()
-	
+
 inputfile=open(sys.argv[1], "rU")
 aaoutput=open(sys.argv[2], "w")
 nucoutput=open(sys.argv[3], "w")
@@ -17,10 +17,12 @@ records = list(SeqIO.parse(inputfile, "genbank"))
 inputfile.close()
 output_record= []
 for record in records:
-	print record
+	#print record
 	for feature in record.features:
-		match = re.match("rRNA", feature.type)
-		if match != None:
-			print feature
+		if feature.type == 'CDS':
+			assert len(record.seq[feature.location.nofuzzy_start:feature.location.nofuzzy_end]) % 3 == 0
+			print len(record.seq[feature.location.nofuzzy_start:feature.location.nofuzzy_end])/3
+			print len(feature.qualifiers['translation'][0])
+			assert len(record.seq[feature.location.nofuzzy_start:feature.location.nofuzzy_end])/3 == len(feature.qualifiers['translation'][0])
 aaoutput.close()
 nucoutput.close()
