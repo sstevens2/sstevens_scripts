@@ -3,10 +3,10 @@
 import sys, os
 
 def usage():
-	print "Usage: ANI_calculate.py path2rbb"
+	print "Usage: AAI_calculate.py path2rbb"
 	print "Need the _short.faa files in the same directory"
 	print "And naming is generally important"
-	print "To be used in conjunction with ANI_BLASTnPARSE_ANI.py"
+	print "To be used in conjunction with AAI_BLASTnPARSE.py"
 
 
 if len(sys.argv) != 2:
