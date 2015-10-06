@@ -12,18 +12,11 @@ if len(sys.argv) != 2:
 
 path2faa= sys.argv[1]
 
-#makedb for each
-filelist=[]
-for file in os.listdir(path2faa):
-	if file.endswith(".faa"):
-		filelist.append(file)
-		os.system("makeblastdb -in " +path2faa+file+ " -out "+ path2faa+file.split(".faa")[0]+".db -dbtype prot")
-
 #all v all blast
 for file in filelist:
 	for file2 in filelist:
 		file1n=path2faa+file
-		file2n=path2faa+file2.split(".faa")[0]+".db"
+		file2n=path2faa+".db"
 		outname=file1n.split(".faa")[0]+"v"+file2.split(".faa")[0]+".blast"
 		print "BLASTING "+file+" v "+file2
 		os.system("blastp -task blastp -query " + file1n+" -db "+file2n+" -out "+outname+" -evalue 0.001")
