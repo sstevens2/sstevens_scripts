@@ -21,7 +21,8 @@ for file in filelist:
 		outname="{}v{}.blast".format(os.path.splitext(file1n)[0],os.path.splitext(file2n)[0])
 		print("BLASTING {} v {}".format(file1n,file2n))
 		os.system("blastp -task blastp -query {} -db {} -out {} -evalue 0.001".format(file,file2n+'.db',outname))
-		os.system("filtersearchio5 -tophsp -qcoverage 50 -format 8 < {} > {}.tophsp.percqcov50".format(outname))
+		print outname
+		os.system("filtersearchio5 -tophsp -qcoverage 50 -format 8 < {0} > {0}.tophsp.percqcov50".format(outname))
 
 for file in filelist:
 	for file2 in filelist:
