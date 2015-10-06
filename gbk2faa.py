@@ -7,16 +7,13 @@ def usage():
 	print "Usage: gbk2faa.py gbkfile"
 
 
-if len(sys.argv) != 3:
+if len(sys.argv) != 2:
 	usage()
 	exit()
 
-gbk = sys.argv[1]
-
-outname=file.split(".gb")[0]
 
 gbk_filename = sys.argv[1]
-faa_filename = os.path.splitext(sys.argv[1])+'.faa'
+faa_filename = os.path.splitext(sys.argv[1])[0]+'.faa'
 input  = open(gbk_filename, "r")
 output = open(faa_filename, "w")
 
