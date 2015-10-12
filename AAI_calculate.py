@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-import sys, os
+import sys, os, glob
 
 def usage():
-	print "Usage: AAI_calculate.py path2rbb"
+	print "Usage: AAI_calculate.py glob2rbb"
 	print "Need the _short.faa files in the same directory"
 	print "And naming is generally important"
 	print "To be used in conjunction with AAI_BLASTnPARSE.py"
@@ -13,14 +13,13 @@ if len(sys.argv) != 2:
 	usage()
 	exit()
 
+filelist=glob.glob(sys.argv[1])
 path2rbb=sys.argv[1]
 
 genomelist=[]
-filelist=[]
 ##get a list of all the genome names
-for file in os.listdir(path2rbb):
+for file in filelist:
 	if file.endswith(".rbb"):
-		filelist.append(file)
 		if file.split("_")[0] not in genomelist:
 			genomelist.append(file.split("_")[0])
 ##print len(genomelist)
