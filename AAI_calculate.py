@@ -14,7 +14,6 @@ if len(sys.argv) != 2:
 	exit()
 
 filelist=glob.glob(sys.argv[1])
-path2rbb=sys.argv[1]
 
 genomelist=[]
 ##get a list of all the genome names
@@ -35,14 +34,14 @@ for item in genomelist:
 
 ##get all the numbers and organize them into lists
 for genome in genomelist:
-	genomefile=open(path2rbb+genome+"_short.faa", "rU")
+	genomefile=open(genome+"_short.faa", "rU")
 	genome_content=genomefile.read()
 	genes=genome_content.count('>')
 #	print genome, genes
 	for file in filelist:
 		if file.split("_")[0] == genome:
 			pid_total=0
-			tmp_file=open(path2rbb+file, "rU")
+			tmp_file=open(file, "rU")
 			lines=tmp_file.readlines()
 			for line in lines:
 #				print line.split("\t")[2]
