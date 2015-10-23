@@ -3,9 +3,9 @@
 import sys, os, string, random
 
 def usage():
-	print "Usage: SAGgeneseditnames.py fastafile namekey.txt"
+	print "Usage: SAGgeneseditnames.py fastafile"
 
-if len(sys.argv) !=3:
+if len(sys.argv) !=2:
 	usage()
 	exit()
 	
@@ -13,11 +13,12 @@ fasta=open(sys.argv[1], "rU")
 listfa =fasta.readlines()
 fasta.close()
 output=open(sys.argv[1].split(".faa")[0]+"_short.faa", "w")
-output2=open(sys.argv[2], "w")
+output2=open(os.path.splitext(sys.argv[1])[0]+"_namekey.txt", "w")
 
 index=0
 for line in listfa:
 	if line.startswith(">"):
+		index="%04d" % index
 		newline=">"+sys.argv[1].split(".faa")[0]+"_"+str(index)+"\n"
 		output.write(newline)
 		output2.write(line.split("\n")[0]+"\t"+newline)
