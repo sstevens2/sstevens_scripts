@@ -28,4 +28,4 @@ for file in filelist:
 	for file2 in filelist:
 		file1n=path2faa+file.split(".faa")[0]+"v"+file2.split(".faa")[0]+".blast.tophsp.percqcov50"
 		file2n=path2faa+file2.split(".faa")[0]+"v"+file.split(".faa")[0]+".blast.tophsp.percqcov50"
-		os.system("perl ~/Programs/reciprocal_blast_hit_parsing2.pl -i1 " + file1n+" -i2 " +file2n+" -o " + path2faa+file.split(".faa")[0]+"v"+file2.split(".faa")[0]+".rbb")
+		os.system("perl ~/programs/reciprocal_blast_hit_parsing2 -i1 " + file1n+" -i2 " +file2n+" -o " + path2faa+file.split(".faa")[0]+"v"+file2.split(".faa")[0]+".rbb")
