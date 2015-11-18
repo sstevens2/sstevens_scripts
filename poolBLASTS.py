@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, os, csv
+import sys, os, csv, glob
 
 """poolBLASTS.py takes the metagenome metadata and a set of metagenome blasts, 
 	and pools each month from the same year together."""
@@ -9,15 +9,14 @@ __author__ = "Sarah Stevens"
 __email__ = "sstevens2@wisc.edu"
 
 def usage():
-	print "Usage: poolBLASTS.py blastfilelist metadatafile"
+	print "Usage: poolBLASTS.py 'blastfilelist(glob)' metadatafile"
 	sys.exit(2)
 
 if len(sys.argv) != 3:
 	usage()
 	exit()
 
-blastlfile=open(sys.argv[1], 'rU')
-blastlist=blastlfile.readlines()
+blastlist=glob.glob(sys.argv[1])
 bsn=[] #blast sample names list
 for line in blastlist:
 	bsn.append(line.split('.')[0])
