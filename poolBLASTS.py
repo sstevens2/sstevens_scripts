@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, os, csv
+import sys, os, csv, glob
 
 """poolBLASTS.py takes the metagenome metadata and a set of metagenome blasts, 
 	and pools each month from the same year together."""
