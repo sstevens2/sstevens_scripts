@@ -1,17 +1,16 @@
 #!/usr/bin/python
 
-import sys, os
+import sys, os, glob
 
 def usage():
-	print "Usage: concatenateFastaALN.py listoffasta2concatenate"
+	print "Usage: concatenateFastaALN.py listoffasta2concatenate(glob)"
 
 
 if len(sys.argv) !=2:
 	usage()
 	exit()
 
-dirfile=open(sys.argv[1], 'rU')
-dirlist=dirfile.readlines()
+dirlist=glob.glob(sys.argv[1])
 index=0
 index2=0
 dirlist.pop(0)
