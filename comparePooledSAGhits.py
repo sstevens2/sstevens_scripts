@@ -40,11 +40,12 @@ for ref in refs:
     # For each other SAG
     for ref2 in refs:
         ref2_df=input[input['SAG'] == ref2]
+        matchingReads = intersectHits(ref_df['READ'], ref2_df['READ'])
         if ref == ref2: # Sanity check.. the same SAG vs itself should return the number of unique reads for that SAG
-            assert len(intersectHits(ref_df['READ'], ref2_df['READ'])) == len(set(ref_df['READ']))
-        hitsout_df.set_value(ref,ref2,len(intersectHits(ref_df['READ'], ref2_df['READ'])))
+            assert len(matchingReads) == len(set(ref_df['READ']))
+        hitsout_df.set_value(ref,ref2,len(matchingReads))
         #Add percentage version...
-        percout_df.set_value(ref,ref2,(len(intersectHits(ref_df['READ'], ref2_df['READ']))/float(len(set(ref_df['READ'])))))
+        percout_df.set_value(ref,ref2,(len(matchingReads)/float(len(set(ref_df['READ'])))))
 
 # Write *out_df's to files
 hitsout_df.to_csv(sys.argv[1]+'.compHIT', sep='\t')
