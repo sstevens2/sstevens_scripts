@@ -10,7 +10,7 @@ __email__ = "sstevens2@wisc.edu"
 
 def usage():
 	print("Usage: compareSAGhits.py catblastfile")
-	print("finds out how many reads both of a pair SAGs, from blast results)
+	print("finds out how many reads both of a pair SAGs, from blast results")
 	print("catblastfile: file with all the blast results from the different genomes to compare")
 
 if len(sys.argv) != 2:
@@ -20,7 +20,7 @@ if len(sys.argv) != 2:
 # Function to intersect two Series of Readnames and return length
 def intersectHits(s1, s2):
     """ Intersects two numpy series and returns the number of hits in common"""
-    return len(set(s1) & set(s2))
+    return (set(s1) & set(s2))
 
 # Read in file as DataFrame
 input = pd.read_table(sys.argv[1],delim_whitespace=True, header=None)
@@ -43,9 +43,9 @@ for ref in refs:
         if ref == ref2: # Sanity check.. the same SAG vs itself should return the number of unique reads for that SAG
             assert intersectHits(ref_df['READ'], ref2_df['READ']) == len(set(ref_df['READ']))
         ref2_df=input[input['SAG'] == ref2]
-        hitsout_df.set_value(ref,ref2,intersectHits(ref_df['READ'], ref2_df['READ']))
+        hitsout_df.set_value(ref,ref2,len(intersectHits(ref_df['READ'], ref2_df['READ'])))
         #Add percentage version...
-        percout_df.set_value(ref,ref2,(intersectHits(ref_df['READ'], ref2_df['READ'])/float(len(set(ref_df['READ'])))))
+        percout_df.set_value(ref,ref2,(len(intersectHits(ref_df['READ'], ref2_df['READ']))/float(len(set(ref_df['READ'])))))
 
 # Write *out_df's to files
 hitsout_df.to_csv(sys.argv[1]+'.compHIT', sep='\t')
