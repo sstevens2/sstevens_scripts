@@ -41,7 +41,7 @@ for ref in refs:
     for ref2 in refs:
         ref2_df=input[input['SAG'] == ref2]
         if ref == ref2: # Sanity check.. the same SAG vs itself should return the number of unique reads for that SAG
-            assert intersectHits(ref_df['READ'], ref2_df['READ']) == len(set(ref_df['READ']))
+            assert len(intersectHits(ref_df['READ'], ref2_df['READ'])) == len(set(ref_df['READ']))
         ref2_df=input[input['SAG'] == ref2]
         hitsout_df.set_value(ref,ref2,len(intersectHits(ref_df['READ'], ref2_df['READ'])))
         #Add percentage version...
