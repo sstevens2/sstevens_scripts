@@ -10,6 +10,8 @@ __email__ = "sstevens2@wisc.edu"
 
 def usage():
 	print("Usage: compareSAGhits.py catblastfile")
+	print("finds out how many reads both of a pair SAGs, from blast results)
+	print("catblastfile: file with all the blast results from the different genomes to compare")
 
 if len(sys.argv) != 2:
 	usage()
