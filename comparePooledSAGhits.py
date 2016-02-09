@@ -19,11 +19,14 @@ if len(sys.argv) != 2:
 	usage()
 	sys.exit(2)
 
+# Functions:
+
 # Function to intersect two Series of Readnames and return length
 def intersectHits(s1, s2):
 	""" Intersects two numpy series and returns the number of hits in common"""
 	return (set(s1) & set(s2))
 
+# Function to parse the whole df into many dfs, one per SAG (or a different col, if needed) and add to dictionary by the sagname
 def parseInput(comb_df,parseCol):
 	""" Separates out all of the different SAGs into separate df and (saves them in a dictionary) """
 	out_dict = dict()
@@ -33,7 +36,7 @@ def parseInput(comb_df,parseCol):
 		out_dict[ref]=ref_df
 	return out_dict
 
-
+# Main:
 
 # Read in file as DataFrame
 infile = pd.read_table(sys.argv[1],delim_whitespace=True, header=None,names=['pool','meta_info','ref_info','PID','align_len','mismatches','gaps','q_start','q_end','s_start','s_end','evalue','bit_score'])
@@ -49,7 +52,6 @@ infile_parsed = parseInput(comb_df=infile, parseCol='SAG')
 names=list(infile_parsed.keys())
 hitsout_df=pd.DataFrame(index=names, columns=names) # Raw number of hits
 percout_df=pd.DataFrame(index=names, columns=names) # Percentage of ref's hits
-
 
 # For each SAG
 for ref, ref_df in infile_parsed.items():
