@@ -18,57 +18,17 @@ if len(sys.argv) != 2:
 	usage()
 	exit()
 
+# Read in input
+inblast = pd.read_table(sys.argv[1],delim_whitespace=True, header=None,names=['read','subject','PID','align_len','mismatches','gaps','q_start','q_end','s_start','s_end','evalue','bit_score'])
 
+# Remove duplicates
+bs_maxes = inblast.groupby('read').bit_score.transform(max) # finds maxes
+bbh_df = inblast[inblast.bit_score == bs_maxes] # keeps only the max values
+bbh_df = bbh_df.drop_duplicates('read',keep='first') # removes any duplicates (if both are max)
+print('Started with {} hits, kept {} hits'.format(str(len(inblast)), str(len(bbh_df)))) # prints info about number of hits before and after
+# Checking that there are no duplicate reads left
+checkingdups = bbh_df[bbh_df.duplicated('read') == True] # creates a new dataframe with the repeated rows
+assert len(checkingdups) == 0 #shouldn't have any duplicates left and pass this
 
-"""
-#opening input file, just saves location in memory
-blastinput=sys.argv[1]
-blastfile=open(blastinput, "rU")
-#reading each line of the input file into a list of rows
-blast=blastfile.readlines()
-#closes save location, because already read row into file
-blastfile.close()
-
-#for each row, split into columns and save
-blastlist=[]
-for line in blast:
-	blastlist.append(line.split("\t"))
-
-#for each row, save name if not saved before
-uniques=[]
-for row in blastlist:
-	if row[0] not in uniques:
-		uniques.append(row[0])
-
-#breaks up the list by unique names
-splitblast=[]
-for unique in uniques:
-	templist=[]
-	for row in blastlist:
-		if unique == row[0]:
-			templist.append(row)
-	splitblast.append(templist)
-
-#for each chunk, finds best hit and saves to list
-finallist=[]
-for item in splitblast:
-	max=0.0
-	item2save=[]
-	for row in item:
-		value=float(row[2])
-		if value > max:
-			max=value
-			item2save=row
-	finallist.append(item2save)
-
-#writes all best hits to file
-outputname=blastinput.split(".")[0]+"_bbh.blast"
-output=open(outputname, "w")
-for item in finallist:
-	for col in item:
-		if not col.endswith("\n"):
-			output.write(col+"\t")
-		else:
-			output.write(col)
-output.close()
-"""
+# Output to file
+bbh_df.to_csv(sys.argv[1]+'.bbh', sep='\t', header=False, index=False)
