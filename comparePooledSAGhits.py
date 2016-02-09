@@ -39,7 +39,8 @@ def parseInput(comb_df,parseCol):
 # Main:
 
 # Read in file as DataFrame
-infile = pd.read_table(sys.argv[1],delim_whitespace=True, header=None,names=['pool','meta_info','ref_info','PID','align_len','mismatches','gaps','q_start','q_end','s_start','s_end','evalue','bit_score'])
+infile = pd.read_table(sys.argv[1],delim_whitespace=True, header=None, index_col=False, names=['pool','meta_info','ref_info','PID','align_len','mismatches','gaps','q_start','q_end','s_start','s_end','evalue','bit_score'])
+
 # Add a new column that is just the Readname split from the 1st[1] column
 infile['READ']=infile['meta_info'].str.split('.blast:').str.get(1)
 # Add a new column that is just the SAG name from the 2nd[2] column
@@ -52,6 +53,9 @@ infile_parsed = parseInput(comb_df=infile, parseCol='SAG')
 names=list(infile_parsed.keys())
 hitsout_df=pd.DataFrame(index=names, columns=names) # Raw number of hits
 percout_df=pd.DataFrame(index=names, columns=names) # Percentage of ref's hits
+
+# Check if file is bbh, only do count file creation if true
+isBBH = len(infile['READ'].unique()) == len(infile['READ'])
 
 # For each SAG
 for ref, ref_df in infile_parsed.items():
