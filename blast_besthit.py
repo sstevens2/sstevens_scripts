@@ -1,19 +1,26 @@
-#!/usr/bin/python
-#Sarah Stevens
-#sstevens2@wisc.edu
+#!/usr/local/bin/python3
 
 import sys, os
+import pandas as pd
+
+"""blast_besthit.py: pulling out only the best hit from blast results (in outfmt 6)"""
+
+__author__ = "Sarah Stevens"
+__email__ = "sstevens2@wisc.edu"
 
 #print this if not right number of inputs
 def usage():
-	print "Usage: blast_besthit.py blastfile"
-	print "blast file needs to be in outfmt 6"
+	print("Usage: blast_besthit.py blastfile")
+	print("blast file needs to be in outfmt 6")
 
 #check if right number of inputs
 if len(sys.argv) != 2:
 	usage()
 	exit()
 
+
+
+"""
 #opening input file, just saves location in memory
 blastinput=sys.argv[1]
 blastfile=open(blastinput, "rU")
@@ -64,3 +71,4 @@ for item in finallist:
 		else:
 			output.write(col)
 output.close()
+"""
