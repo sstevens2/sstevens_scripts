@@ -21,7 +21,7 @@ if len(sys.argv) != 2:
 
 # Functions:
 
-# Function to intersect two Series of Readnames and return length
+# Function to intersect two Series of Readnames and return shared set
 def intersectHits(s1, s2):
 	""" Intersects two numpy series and returns the number of hits in common"""
 	return (set(s1) & set(s2))
@@ -38,6 +38,47 @@ def parseInput(comb_df,parseCol):
 		if len(ref_df['READ'].unique()) != len(ref_df['READ']):
 			bbhbool = False
 	return out_dict, bbhbool
+
+# Main function to compare hits between two SAGs
+def compareHits(refs):
+	ref, ref2 = refs
+	ref_df = infile_parsed[ref] 
+	ref2_df= infile_parsed[ref2]
+	matchingReads = intersectHits(ref_df['READ'], ref2_df['READ'])
+	if ref == ref2: # Sanity check.. the same SAG vs itself should return the number of unique reads for that SAG
+		assert len(matchingReads) == len(set(ref_df['READ']))
+	# Adding number of hits to output df
+	hitsout_df.set_value(ref,ref2,len(matchingReads))
+	#Add percentage version...
+	perc = (len(matchingReads)/float(len(set(ref_df['READ']))))
+	percout_df.set_value(ref,ref2,perc)
+	# Who hit it best analysis
+	if isBBH:
+		## subset the two refs down to only the shared hits
+		ref1match = ref_df[ref_df['READ'].isin(matchingReads)]#.sort_values('READ')
+		ref2match = ref2_df[ref2_df['READ'].isin(matchingReads)]#.sort_values('READ')
+		assert len(ref1match) == len(ref2match) #just a sanity check
+		#assert (ref1match['READ'] == ref2match['READ']).all() # are the reads the same and in the same order, not sure this matters with join...
+		merged_df = pd.merge(ref1match, ref2match, on='READ', how='inner')
+		## Count the hits where ID is equal
+		equal = (merged_df['bit_score_x'] - merged_df['bit_score_y'] == 0).sum() # number of hits which have equal bit score
+		## Count the hits where ID ref1>ref2
+		ref1greater = (merged_df['bit_score_x'] - merged_df['bit_score_y'] > 0) # hits which bitscore ref1>ref2 - bool, use .sum() if you want the total
+		ref1greater_df = merged_df[ref1greater] #dataframe which has only the hits where bitscore ref1>ref2
+		assert len(ref1greater_df) == ref1greater.sum() # sanity check - same size
+		ref1greaterDiffPID = (ref1greater_df['PID_x']-ref1greater_df['PID_y']) # difference in PID for all of the hits where bitscore ref1>ref2
+		ref1greaterDiffBS = (ref1greater_df['bit_score_x']-ref1greater_df['bit_score_y']) # difference in bitscore for all the hits where bitscore ref1>ref2
+		## Count the hits where ID ref2<ref2
+		ref1less = (merged_df['bit_score_x'] - merged_df['bit_score_y'] < 0) # hits which bitscore ref1<ref2 - bool, use .sum() if you want the total
+		ref1less_df = merged_df[ref1less]
+		assert len(ref1less_df) == ref1less.sum() # sanity check - same size
+		ref1lessDiffPID = (ref1less_df['PID_x']-ref1less_df['PID_y'])
+		ref1lessDiffBS = (ref1less_df['bit_score_x']-ref1less_df['bit_score_y'])
+		assert len(matchingReads) == equal + ref1greater.sum() + ref1less.sum() # sanity check - the parts equal, greater and less should add up to total
+		## Write line to output (pseduoHeader below)
+		# ref1  ref2  num_hits  perc_hits  same  ref1>2  ref1<2  ref1>2_PID_max  ref1>2_PID_mean  ref1>2_PID_min ref1>2_BS_max ref1>2_BS_mean ref1>2_BS_min ref1<2_PID_max ref1<2_PID_mean ref1<2_PID_min ref1<2_BS_max ref1<2_BS_mean ref1<2_BS_min
+		sep='\t'
+		bbh_out.write(sep.join((ref, ref2, str(len(matchingReads)), str(perc), str(equal), str(ref1greater.sum()), str(ref1less.sum()), str(ref1greaterDiffPID.max()), str(ref1greaterDiffPID.mean()), str(ref1greaterDiffPID.min()), str(ref1greaterDiffBS.max()), str(ref1greaterDiffBS.mean()), str(ref1greaterDiffBS.min()), str(ref1lessDiffPID.max()), str(ref1lessDiffPID.mean()), str(ref1lessDiffPID.min()), str(ref1lessDiffBS.max()), str(ref1greaterDiffBS.mean()), str(ref1lessDiffBS.min()),'\n')))
 
 # Main:
 
@@ -65,46 +106,15 @@ if isBBH:
 else:
 	print('Your file is not a bbh, you will only get the .compHIT and .compPERC files')
 
+allCombos = list() # list that holds all possible combinations of sag v. sags
 # For each SAG
-for ref, ref_df in infile_parsed.items():
+for ref in names:
 	# For each other SAG
-	for ref2, ref2_df in infile_parsed.items():
-		ref2_df=infile[infile['SAG'] == ref2]
-		matchingReads = intersectHits(ref_df['READ'], ref2_df['READ'])
-		if ref == ref2: # Sanity check.. the same SAG vs itself should return the number of unique reads for that SAG
-			assert len(matchingReads) == len(set(ref_df['READ']))
-		# Adding number of hits to output df
-		hitsout_df.set_value(ref,ref2,len(matchingReads))
-		#Add percentage version...
-		perc = (len(matchingReads)/float(len(set(ref_df['READ']))))
-		percout_df.set_value(ref,ref2,perc)
-		# Who hit it best analysis
-		if isBBH:
-			## subset the two refs down to only the shared hits
-			ref1match = ref_df[ref_df['READ'].isin(matchingReads)]#.sort_values('READ')
-			ref2match = ref2_df[ref2_df['READ'].isin(matchingReads)]#.sort_values('READ')
-			assert len(ref1match) == len(ref2match) #just a sanity check
-			#assert (ref1match['READ'] == ref2match['READ']).all() # are the reads the same and in the same order, not sure this matters with join...
-			merged_df = pd.merge(ref1match, ref2match, on='READ', how='inner')
-			## Count the hits where ID is equal
-			equal = (merged_df['bit_score_x'] - merged_df['bit_score_y'] == 0).sum() # number of hits which have equal bit score
-			## Count the hits where ID ref1>ref2
-			ref1greater = (merged_df['bit_score_x'] - merged_df['bit_score_y'] > 0) # hits which bitscore ref1>ref2 - bool, use .sum() if you want the total
-			ref1greater_df = merged_df[ref1greater] #dataframe which has only the hits where bitscore ref1>ref2
-			assert len(ref1greater_df) == ref1greater.sum() # sanity check - same size
-			ref1greaterDiffPID = (ref1greater_df['PID_x']-ref1greater_df['PID_y']) # difference in PID for all of the hits where bitscore ref1>ref2
-			ref1greaterDiffBS = (ref1greater_df['bit_score_x']-ref1greater_df['bit_score_y']) # difference in bitscore for all the hits where bitscore ref1>ref2
-			## Count the hits where ID ref2<ref2
-			ref1less = (merged_df['bit_score_x'] - merged_df['bit_score_y'] < 0) # hits which bitscore ref1<ref2 - bool, use .sum() if you want the total
-			ref1less_df = merged_df[ref1less]
-			assert len(ref1less_df) == ref1less.sum() # sanity check - same size
-			ref1lessDiffPID = (ref1less_df['PID_x']-ref1less_df['PID_y'])
-			ref1lessDiffBS = (ref1less_df['bit_score_x']-ref1less_df['bit_score_y'])
-			assert len(matchingReads) == equal + ref1greater.sum() + ref1less.sum() # sanity check - the parts equal, greater and less should add up to total
-			## Write line to output (pseduoHeader below)
-			# ref1  ref2  num_hits  perc_hits  same  ref1>2  ref1<2  ref1>2_PID_max  ref1>2_PID_mean  ref1>2_PID_min ref1>2_BS_max ref1>2_BS_mean ref1>2_BS_min ref1<2_PID_max ref1<2_PID_mean ref1<2_PID_min ref1<2_BS_max ref1<2_BS_mean ref1<2_BS_min
-			sep='\t'
-			bbh_out.write(sep.join((ref, ref2, str(len(matchingReads)), str(perc), str(equal), str(ref1greater.sum()), str(ref1less.sum()), str(ref1greaterDiffPID.max()), str(ref1greaterDiffPID.mean()), str(ref1greaterDiffPID.min()), str(ref1greaterDiffBS.max()), str(ref1greaterDiffBS.mean()), str(ref1greaterDiffBS.min()), str(ref1lessDiffPID.max()), str(ref1lessDiffPID.mean()), str(ref1lessDiffPID.min()), str(ref1lessDiffBS.max()), str(ref1greaterDiffBS.mean()), str(ref1lessDiffBS.min()),'\n')))
+	for ref2 in names:
+		allCombos.append([ref,ref2])
+
+map(compareHits, allCombos)
+		
 
 # Write *out_df's to files
 hitsout_df.to_csv(sys.argv[1]+'.compHIT', sep='\t')
