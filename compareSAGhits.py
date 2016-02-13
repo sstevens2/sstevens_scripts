@@ -13,9 +13,8 @@ def parseArgs():
 	parser = argparse.ArgumentParser(description='compareSAGhits.py: finding out how many reads hit to different SAGs, from blast results, has extended output for bbh files')
 	parser.add_argument('--blast_in','-bin' , action="store", dest='blast_in', type=str, required=True, metavar='catblastoutfm6', help="This should be the concatenated blast file of the different SAGs. Extended functionality if the file is bbh's for each SAG.")
 	parser.add_argument('--pooled','-p', action="store_true", dest='pool', default=False, help='If you are using a pooled file, add this flag')
-	parser.add_argument('--num_threads', action="store", dest='num_threads',type=int, default=1, metavar='num', help='Number of threads to use if multiprocessing')
 	args=parser.parse_args()
-	return args.blast_in , args.pool, args.num_threads
+	return args.blast_in , args.pool
 
 # Function to intersect two Series of Readnames and return shared set
 def intersectHits(s1, s2):
@@ -78,7 +77,7 @@ def compareHits(refs):
 
 # Main:
 if __name__ == '__main__':
-	filename, pooled, num_thr = parseArgs()
+	filename, pooled = parseArgs()
 	# Read in file as DataFrame
 	if pooled:
 		infile = pd.read_table(filename,delim_whitespace=True, header=None, index_col=False, names=['pool','meta_info','ref_info','PID','align_len','mismatches','gaps','q_start','q_end','s_start','s_end','evalue','bit_score'])
