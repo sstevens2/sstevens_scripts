@@ -6,7 +6,6 @@ from multiprocessing import Pool
 def usage():
 	print "Usage: blastSAGVMetas.py 'path2SAGsfasta(glob)' 'metagenomes(glob)' threads(int)"
 	print "Makes db and runs blastn with the following settings"
-	print "-evalue 0.001 -outfmt 6 -perc_identity 95"
 
 if len(sys.argv) != 4:
 	usage()
@@ -22,7 +21,7 @@ def call_blast(params):
 	outSAG=os.path.basename(os.path.splitext(SAGname)[0])
 	outmeta=os.path.basename(os.path.splitext(metaname)[0])
 	outname=outmeta+'-vs-'+outSAG+'.blast'
-	cmd=['blastn', '-task blastn', '-db '+SAGdb, '-query '+metaname,'-out '+outname, '-evalue 0.001', '-outfmt 6','-perc_identity 95']
+	cmd=['blastn', '-task blastn', '-db '+SAGdb, '-query '+metaname,'-out '+outname, '-outfmt 6'] # add alt blast settings here
 	print ' '.join(cmd), os.getpid() #testing line, left in for log file
 	os.system(' '.join(cmd)) #replace with subprocess when you figure it out
 	#subprocess.call(cmd)
