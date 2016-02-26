@@ -25,7 +25,7 @@ inblast = pd.read_table(sys.argv[1],delim_whitespace=True, header=None,names=['r
 bs_maxes = inblast.groupby('read').bit_score.transform(max) # finds maxes
 bbh_df = inblast[inblast.bit_score == bs_maxes] # keeps only the max values
 bbh_df = bbh_df.drop_duplicates('read',keep='first') # removes any duplicates (if both are max)
-print('Started with {} hits, kept {} hits'.format(str(len(inblast)), str(len(bbh_df)))) # prints info about number of hits before and after
+print('{}\tStarted with {} hits, kept {} hits'.format(sys.argv[1],str(len(inblast)), str(len(bbh_df)))) # prints info about number of hits before and after
 # Checking that there are no duplicate reads left
 checkingdups = bbh_df[bbh_df.duplicated('read') == True] # creates a new dataframe with the repeated rows
 assert len(checkingdups) == 0 #shouldn't have any duplicates left and pass this
