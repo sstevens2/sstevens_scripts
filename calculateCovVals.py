@@ -1,19 +1,17 @@
 #!/usr/bin/python
 
-import sys, os, glob, pandas as pd
-
-def usage():
-    print("Usage: calculateCovVals.py 'blastfiles(glob)' metagenomeSizeFile genomeSizeFile")
-    print("This program was designed to put the following data tables together:")
-    print("number of hits, average ani, covered bases, genome coverage, and genome coverage normalized by metagenome size")
-    print("Requires properly formated data tables - FILL IN DETAILS HERE LATER")
-
-if len(sys.argv) != 4:
-    usage()
-    exit()
+import sys, os, glob, pandas as pd, argparse
 
 # Inputs
-files = glob.glob(sys.argv[1])
+def parseArgs():
+	parser = argparse.ArgumentParser(description='calculateCovVals.py: puts together coverage files from many metagenomes through time, requires properly formated data tables(pooled format)')
+	parser.add_argument('--blast_files','-all_blast' , action="store", dest='files', type=str, required=True, metavar='glob of blast files (quotes needed)', help="This is a glob of all of the blast files to use for the analysis, pooled files.")
+	parser.add_argument('--metaSizeFile','-mSF', action="store", dest='metaSizeFile', default=True, required=True, help='File with metagenome sizes, names should match the pooled column.')
+	parser.add_argument('--genSizeFile','-gSF', action="store", dest='genSizeFile', default=True, required=True, help='File with genome sizes, names should match the genome names in the blast files')
+	args=parser.parse_args()
+	return glob.glob(args.files), args.metaSizeFile, args.genSizeFile
+
+files, metaSizeFile, genSizeFile = parseArgs()
 
 ## Reading in all the files
 
@@ -25,10 +23,10 @@ all_df = pd.concat(dflist) #concats all dataframes together
 all_df['SAG'] = all_df['contig'].str.split('_').str.get(0) # Adds SAG name to column
 
 ### Reading in the metagenome and genome files
-metaSize_df = pd.read_table(sys.argv[2], sep = '\t', names = ['metaFile','bp'])
+metaSize_df = pd.read_table(metaSizeFile, sep = '\t', names = ['metaFile','bp'])
 metaSize_df = metaSize_df.groupby('metaFile').sum().reset_index() # puts together pooled timepoints
 metaSize_df['season'] = metaSize_df['metaFile'].str.split('.').str.get(0)
-genSize_df = pd.read_table(sys.argv[3], sep='\t', names = ['genFile','bp'])
+genSize_df = pd.read_table(genSizeFile, sep='\t', names = ['genFile','bp'])
 genSize_df['SAG'] = genSize_df['genFile'].str.split('_').str.get(0)
 
 ## Analysis
