@@ -15,16 +15,6 @@ if len(sys.argv) != 4:
 # Inputs
 files = glob.glob(sys.argv[1])
 
-
-# Functions
-
-def calcGenCov(c, genSize_df):
-	pass
-
-def calcNormCov(covBas_df, metagenSize_df):
-	pass
-
-
 ## Reading in all the files
 
 dflist=[] # list of all the dataframes read in
@@ -41,10 +31,10 @@ metaSize_df['season'] = metaSize_df['metaFile'].str.split('.').str.get(0)
 genSize_df = pd.read_table(sys.argv[3], sep='\t', names = ['genFile','bp'])
 genSize_df['SAG'] = genSize_df['genFile'].str.split('_').str.get(0)
 
+## Analysis
+
 ## Group by SAG and season (ss)
 ssgroup = all_df.groupby(['SAG','season'])
-
-
 
 ## Makes hit table
 hit_table= ssgroup.count().reset_index()[['SAG','season','read']]
