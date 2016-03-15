@@ -6,19 +6,25 @@ import sys, os, glob, pandas as pd, argparse
 def parseArgs():
 	parser = argparse.ArgumentParser(description='calculateCovVals.py: puts together coverage files from many metagenomes through time, requires properly formated data tables(pooled format)')
 	parser.add_argument('--blast_files','-all_blast' , action="store", dest='files', type=str, required=True, metavar='glob of blast files (quotes needed)', help="This is a glob of all of the blast files to use for the analysis, pooled files.")
-	parser.add_argument('--metaSizeFile','-mSF', action="store", dest='metaSizeFile', default=True, required=True, help='File with metagenome sizes, names should match the pooled column.')
-	parser.add_argument('--genSizeFile','-gSF', action="store", dest='genSizeFile', default=True, required=True, help='File with genome sizes, names should match the genome names in the blast files')
+	parser.add_argument('--metaSizeFile','-mSF', action="store", dest='metaSizeFile', required=True, help='File with metagenome sizes, names should match the pooled column.')
+	parser.add_argument('--genSizeFile','-gSF', action="store", dest='genSizeFile', required=True, help='File with genome sizes, names should match the genome names in the blast files')
+	parser.add_argument('--isBBH', '-bbh', action="store_true", dest=bbh, default=True, help='Include this flag if file(s) is(are) a bbh, bbh processed file has extra column')
 	args=parser.parse_args()
-	return glob.glob(args.files), args.metaSizeFile, args.genSizeFile
+	return glob.glob(args.files), args.metaSizeFile, args.genSizeFile, args.bbh
 
-files, metaSizeFile, genSizeFile = parseArgs()
+files, metaSizeFile, genSizeFile, bbh = parseArgs()
 
 ## Reading in all the files
 
 dflist=[] # list of all the dataframes read in
 for infile in files:
-    df = pd.read_table(infile, sep=r"\s*", names=['season', 'read', 'contig', 'PID', 'align_len', 'mismatches', 'gaps', 'q_start', 'q_end', 's_start', 's_end', 'evalue', 'bit_score'])
-    dflist.append(df)
+	if not bbh:
+    	df = pd.read_table(infile, delim_whitespace=True,header=None, names=['season', 'read_info', 'contig', 'PID', 'align_len', 'mismatches', 'gaps', 'q_start', 'q_end', 's_start', 's_end', 'evalue', 'bit_score'])
+    	inblast['read']=inblast['read_info'].str.split('.blast:').str.get(1)
+    	dflist.append(df)
+    else:
+    	df = pd.read_table(infile, delim_whitespace=True,header=None, names=['season','read_info','subject','PID','align_len','mismatches','gaps','q_start','q_end','s_start','s_end','evalue','bit_score','read'])
+    	dflist.append(df)
 all_df = pd.concat(dflist) #concats all dataframes together
 all_df['SAG'] = all_df['contig'].str.split('_').str.get(0) # Adds SAG name to column
 
