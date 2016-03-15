@@ -20,7 +20,7 @@ dflist=[] # list of all the dataframes read in
 for infile in files:
 	if not bbh:
 		df = pd.read_table(infile, delim_whitespace=True,header=None, names=['season', 'read_info', 'contig', 'PID', 'align_len', 'mismatches', 'gaps', 'q_start', 'q_end', 's_start', 's_end', 'evalue', 'bit_score'])
-		inblast['read']=inblast['read_info'].str.split('.blast:').str.get(1)
+		df['read']=df['read_info'].str.split('.blast:').str.get(1)
 		dflist.append(df)
 	else:
 		df = pd.read_table(infile, delim_whitespace=True,header=None, names=['season','read_info','contig','PID','align_len','mismatches','gaps','q_start','q_end','s_start','s_end','evalue','bit_score','read'])
