@@ -23,7 +23,7 @@ for infile in files:
 		inblast['read']=inblast['read_info'].str.split('.blast:').str.get(1)
 		dflist.append(df)
 	else:
-		df = pd.read_table(infile, delim_whitespace=True,header=None, names=['season','read_info','subject','PID','align_len','mismatches','gaps','q_start','q_end','s_start','s_end','evalue','bit_score','read'])
+		df = pd.read_table(infile, delim_whitespace=True,header=None, names=['season','read_info','contig','PID','align_len','mismatches','gaps','q_start','q_end','s_start','s_end','evalue','bit_score','read'])
 		dflist.append(df)
 all_df = pd.concat(dflist) #concats all dataframes together
 all_df['SAG'] = all_df['contig'].str.split('_').str.get(0) # Adds SAG name to column
