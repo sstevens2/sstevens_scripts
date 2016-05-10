@@ -9,10 +9,11 @@ def parseArgs():
 	parser.add_argument('--metaSizeFile','-mSF', action="store", dest='metaSizeFile', required=True, help='File with metagenome sizes, names should match the pooled column.')
 	parser.add_argument('--genSizeFile','-gSF', action="store", dest='genSizeFile', required=True, help='File with genome sizes, names should match the genome names in the blast files')
 	parser.add_argument('--isBBH', '-bbh', action="store_true", dest='bbh', default=False, help='Include this flag if file(s) is(are) a bbh, bbh processed file has extra column')
+	parser.add_argument('--byContigs', '-bc', action="store_true", dest='bycon', default=False, help="Include this flag if you want the coverage info to be calculated by contig (the genSizeFile should have a value for each contig then)")
 	args=parser.parse_args()
-	return glob.glob(args.files), args.metaSizeFile, args.genSizeFile, args.bbh
+	return glob.glob(args.files), args.metaSizeFile, args.genSizeFile, args.bbh, args.bycon
 
-files, metaSizeFile, genSizeFile, bbh = parseArgs()
+files, metaSizeFile, genSizeFile, bbh, bycon = parseArgs()
 
 ## Reading in all the files
 
@@ -26,14 +27,20 @@ for infile in files:
 		df = pd.read_table(infile, delim_whitespace=True,header=None, names=['season','read_info','contig','PID','align_len','mismatches','gaps','q_start','q_end','s_start','s_end','evalue','bit_score','read'])
 		dflist.append(df)
 all_df = pd.concat(dflist) #concats all dataframes together
-all_df['SAG'] = all_df['contig'].str.split('_').str.get(0) # Adds SAG name to column
+if not bycon: # using SAG name if not by contig, if by contig, then 'SAG' for rest of script really means contig
+	all_df['SAG'] = all_df['contig'].str.split('_').str.get(0) # Adds SAG name to column
+else:
+	all_df['SAG'] = all_df['contig'] # Adds contig to SAG name column
 
 ### Reading in the metagenome and genome files
 metaSize_df = pd.read_table(metaSizeFile, sep = '\t', names = ['metaFile','bp'])
 metaSize_df = metaSize_df.groupby('metaFile').sum().reset_index() # puts together pooled timepoints
 metaSize_df['season'] = metaSize_df['metaFile'].str.split('.').str.get(0)
 genSize_df = pd.read_table(genSizeFile, sep='\t', names = ['genFile','bp'])
-genSize_df['SAG'] = genSize_df['genFile'].str.split('_').str.get(0)
+if not bycon: # using SAG name if not by contig, if by contig, then 'SAG' for rest of script really means contig
+	genSize_df['SAG'] = genSize_df['genFile'].str.split('_').str.get(0)
+else:
+	genSize_df['SAG'] = genSize_df['genFile']
 
 ## Analysis
 
