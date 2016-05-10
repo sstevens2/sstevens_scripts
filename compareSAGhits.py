@@ -10,7 +10,7 @@ __email__ = "sstevens2@wisc.edu"
 # Functions:
 
 def parseArgs():
-	parser = argparse.ArgumentParser(description='compareSAGhits.py: finding out how many reads hit to different SAGs, from blast results, has extended output for bbh files')
+	parser = argparse.ArgumentParser(description='compareSAGhits.py: finding out how which SAGs have hits from the same reads and how many they share and who had the better hit, from blast results. Has extended output for bbh files')
 	parser.add_argument('--blast_in','-bin' , action="store", dest='blast_in', type=str, required=True, metavar='catblastoutfm6', help="This should be the concatenated blast file of the different SAGs. Extended functionality if the file is bbh's for each SAG.")
 	parser.add_argument('--pooled','-p', action="store_true", dest='pool', default=False, help='If you are using a pooled file, add this flag, as the pooled files have an extra column')
 	args=parser.parse_args()
