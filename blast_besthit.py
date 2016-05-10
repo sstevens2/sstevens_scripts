@@ -7,11 +7,6 @@ import pandas as pd
 
 __author__ = "Sarah Stevens"
 __email__ = "sstevens2@wisc.edu"
-
-#print this if not right number of inputs
-def usage():
-	print("Usage: blast_besthit.py blastfile")
-	print("blast file needs to be in outfmt 6")
 	
 # Inputs
 def parseArgs():
