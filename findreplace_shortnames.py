@@ -15,18 +15,19 @@ if len(sys.argv) != 3:
 
 inputfile=open(sys.argv[1], 'rU')
 namekey=open(sys.argv[2], 'rU')
+outname,ext = os.path.splitext(sys.argv[1])
 
 input=inputfile.read()
 namekey=namekey.readlines()
 
 for line in namekey:
-	old=line.split(' ')[0]
-	new=line.split(' ')[-1].split('\n')[0]
+	old=line.split(' ')[0].split('>')[1]
+	new=line.split(' ')[-1].split('\n')[0].split('>')[1]
 	#old=line.split(' ')[0].split('>')[1]
 	#new=line.split('>')[-1].split('\n')[0]
 	print old, new
 	input=input.replace(old, new)
 
-output=open(sys.argv[1]+'2','w')
+output=open(outname+'.replaced_names.txt','w')
 output.write(input)
 output.close()
